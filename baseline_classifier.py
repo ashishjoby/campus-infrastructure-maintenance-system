@@ -6,7 +6,8 @@ import joblib
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix 
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+
 from department_mapping import get_department
 
 
@@ -23,35 +24,36 @@ y = df["category"]
 
 
 # 3. Split dataset into training and testing data
-X_train, X_test, y_train, y_test = train_test_split(
+X_train_raw, X_test_raw, y_train, y_test = train_test_split(
     X,
     y,
-    test_size=0.20,
-    random_state=42,
-    stratify=y
+    test_size=0.2,
+    random_state=42
 )
 
-
-print("\nTraining complaints:", len(X_train))
-print("Testing complaints:", len(X_test))
+print("\nTraining complaints:", len(X_train_raw))
+print("Testing complaints:", len(X_test_raw))
 
 
 # 4. Convert complaint text into numerical features
 vectorizer = TfidfVectorizer()
 
-X_train_tfidf = vectorizer.fit_transform(X_train)
-X_test_tfidf = vectorizer.transform(X_test)
+X_train_tfidf = vectorizer.fit_transform(X_train_raw)
+X_test_tfidf = vectorizer.transform(X_test_raw)
 
 
 # 5. Train Logistic Regression model
 model = LogisticRegression(max_iter=1000)
 
 model.fit(X_train_tfidf, y_train)
+
+
 # Save trained model and vectorizer
 joblib.dump(model, "models/complaint_classifier.joblib")
 joblib.dump(vectorizer, "models/tfidf_vectorizer.joblib")
 
 print("\nModel and vectorizer saved successfully.")
+
 
 # 6. Make predictions
 y_pred = model.predict(X_test_tfidf)
@@ -67,7 +69,26 @@ print("==============================")
 print("Accuracy:", round(accuracy, 4))
 
 print("\nClassification Report:")
- # Confusion Matrix
+print(classification_report(y_test, y_pred))
+
+
+# 8. Show incorrect predictions
+print("\nIncorrect Predictions:")
+print("-" * 80)
+
+for complaint, actual, predicted in zip(
+    X_test_raw, y_test, y_pred
+):
+    if actual != predicted:
+        print("Complaint:", complaint)
+        print("Actual:", actual)
+        print("Predicted:", predicted)
+        print("-" * 80)
+
+
+# 9. Confusion Matrix
+# Uncomment the following section if you want to display the confusion matrix.
+
 # cm = confusion_matrix(y_test, y_pred)
 
 # plt.figure(figsize=(8, 6))
@@ -86,7 +107,9 @@ print("\nClassification Report:")
 
 # plt.tight_layout()
 # plt.show()
-# Interactive Prediction
+
+
+# 10. Interactive Prediction
 print("\n" + "=" * 30)
 print("TEST A NEW COMPLAINT")
 print("=" * 30)
