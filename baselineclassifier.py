@@ -1,6 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import joblib
 
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -46,7 +47,11 @@ X_test_tfidf = vectorizer.transform(X_test)
 model = LogisticRegression(max_iter=1000)
 
 model.fit(X_train_tfidf, y_train)
+# Save trained model and vectorizer
+joblib.dump(model, "models/complaint_classifier.joblib")
+joblib.dump(vectorizer, "models/tfidf_vectorizer.joblib")
 
+print("\nModel and vectorizer saved successfully.")
 
 # 6. Make predictions
 y_pred = model.predict(X_test_tfidf)
