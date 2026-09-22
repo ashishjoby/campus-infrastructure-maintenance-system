@@ -1,9 +1,11 @@
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, classification_report
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix 
 
 
 # 1. Load dataset
@@ -59,4 +61,34 @@ print("==============================")
 print("Accuracy:", round(accuracy, 4))
 
 print("\nClassification Report:")
-print(classification_report(y_test, y_pred))
+ # Confusion Matrix
+# cm = confusion_matrix(y_test, y_pred)
+
+# plt.figure(figsize=(8, 6))
+
+# sns.heatmap(
+#     cm,
+#     annot=True,
+#     fmt="d",
+#     xticklabels=model.classes_,
+#     yticklabels=model.classes_
+# )
+
+# plt.xlabel("Predicted Category")
+# plt.ylabel("Actual Category")
+# plt.title("Confusion Matrix - Baseline Classifier")
+
+# plt.tight_layout()
+# plt.show()
+# Interactive Prediction
+print("\n" + "=" * 30)
+print("TEST A NEW COMPLAINT")
+print("=" * 30)
+
+new_complaint = input("Enter complaint: ")
+
+new_complaint_tfidf = vectorizer.transform([new_complaint])
+
+prediction = model.predict(new_complaint_tfidf)
+
+print("\nPredicted Category:", prediction[0])
