@@ -6,6 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix 
+from department_mapping import get_department
 
 
 # 1. Load dataset
@@ -91,4 +92,8 @@ new_complaint_tfidf = vectorizer.transform([new_complaint])
 
 prediction = model.predict(new_complaint_tfidf)
 
-print("\nPredicted Category:", prediction[0])
+predicted_category = prediction[0]
+assigned_department = get_department(predicted_category)
+
+print("\nPredicted Category:", predicted_category)
+print("Assigned Department:", assigned_department)
