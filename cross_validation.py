@@ -41,37 +41,56 @@ svm_pipeline = Pipeline([
 ])
 
 
-# 6. Evaluate Logistic Regression
-logistic_scores = cross_val_score(
-    logistic_pipeline,
-    X,
-    y,
-    cv=cv,
-    scoring="accuracy"
-)
+# 6. Evaluation function
+def evaluate_model(model, model_name):
+
+    accuracy = cross_val_score(
+        model,
+        X,
+        y,
+        cv=cv,
+        scoring="accuracy"
+    )
+
+    macro_f1 = cross_val_score(
+        model,
+        X,
+        y,
+        cv=cv,
+        scoring="f1_macro"
+    )
+
+    weighted_f1 = cross_val_score(
+        model,
+        X,
+        y,
+        cv=cv,
+        scoring="f1_weighted"
+    )
+
+    print(f"\n{model_name}")
+    print("-" * 30)
+
+    print("Accuracy:")
+    print("  Fold scores:", accuracy)
+    print("  Mean:", round(accuracy.mean(), 4))
+    print("  Std:", round(accuracy.std(), 4))
+
+    print("Macro F1:")
+    print("  Fold scores:", macro_f1)
+    print("  Mean:", round(macro_f1.mean(), 4))
+    print("  Std:", round(macro_f1.std(), 4))
+
+    print("Weighted F1:")
+    print("  Fold scores:", weighted_f1)
+    print("  Mean:", round(weighted_f1.mean(), 4))
+    print("  Std:", round(weighted_f1.std(), 4))
 
 
-# 7. Evaluate Linear SVM
-svm_scores = cross_val_score(
-    svm_pipeline,
-    X,
-    y,
-    cv=cv,
-    scoring="accuracy"
-)
-
-
-# 8. Display results
+# 7. Evaluate both models
 print("\n==============================")
 print("5-FOLD CROSS-VALIDATION")
 print("==============================")
 
-print("\nLogistic Regression")
-print("Fold accuracies:", logistic_scores)
-print("Mean accuracy:", round(logistic_scores.mean(), 4))
-print("Standard deviation:", round(logistic_scores.std(), 4))
-
-print("\nLinear SVM")
-print("Fold accuracies:", svm_scores)
-print("Mean accuracy:", round(svm_scores.mean(), 4))
-print("Standard deviation:", round(svm_scores.std(), 4))
+evaluate_model(logistic_pipeline, "Logistic Regression")
+evaluate_model(svm_pipeline, "Linear SVM")

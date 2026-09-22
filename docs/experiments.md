@@ -154,46 +154,52 @@ Evaluate the stability of Logistic Regression and Linear SVM using stratified 5-
 - Cross-validation: Stratified 5-Fold
 - Shuffle: True
 - Random state: 42
-- Evaluation metric: Accuracy
+- Evaluation metrics: Accuracy, Macro F1-score, Weighted F1-score
 
 ### Results
 
-| Model | Mean Accuracy | Standard Deviation |
-|---|---:|---:|
-| Logistic Regression | 88.86% | 0.0575 |
-| Linear SVM | 93.90% | 0.0387 |
+| Model | Mean Accuracy | Accuracy Std. | Mean Macro F1 | Macro F1 Std. | Mean Weighted F1 | Weighted F1 Std. |
+|---|---:|---:|---:|---:|---:|---:|
+| Logistic Regression | 88.86% | 0.0575 | 88.56% | 0.0614 | 88.76% | 0.0589 |
+| Linear SVM | 93.90% | 0.0387 | 93.74% | 0.0408 | 93.82% | 0.0395 |
 
 ### Observation
 
 The single 80/20 train-test experiment produced the same accuracy for Logistic Regression and Linear SVM (87.50%).
 
-However, 5-fold cross-validation produced different mean accuracies.
+However, stratified 5-fold cross-validation produced different mean performance values across the folds.
 
-Linear SVM achieved a mean accuracy of 93.90%, while Logistic Regression achieved 88.86%.
+Linear SVM achieved a mean accuracy of 93.90%, a mean macro F1-score of 93.74%, and a mean weighted F1-score of 93.82%.
 
-Linear SVM also showed lower variation across folds in this experiment.
+Logistic Regression achieved a mean accuracy of 88.86%, a mean macro F1-score of 88.56%, and a mean weighted F1-score of 88.76%.
+
+Linear SVM also showed lower variation across folds for all three reported metrics.
 
 ### Conclusion
 
-On the current synthetic dataset, Linear SVM showed higher mean cross-validation accuracy than Logistic Regression.
+On the current synthetic dataset, Linear SVM produced higher mean Accuracy, Macro F1-score, and Weighted F1-score than Logistic Regression in the 5-fold cross-validation experiment.
 
-Further evaluation using real anonymized campus complaints is required before making conclusions about real-world performance.
+Further evaluation using real anonymized campus complaints is required before assessing real-world generalization.
 
 ---
 
 ## Overall Experiment Summary
 
-| Experiment | Dataset | Model | Evaluation | Accuracy |
-|---|---|---|---|---:|
-| 1 | v1 — 150 | Logistic Regression | 80/20 split | 76.67% |
-| 2 | v2 — 180 | Logistic Regression | 80/20 split | 86.11% |
-| 3 | v3 — 198 | Logistic Regression | 80/20 split | 87.50% |
-| 4 | v3 — 198 | Linear SVM | 80/20 split | 87.50% |
-| 5 | v3 — 198 | Logistic Regression | 5-fold CV | 88.86% |
-| 5 | v3 — 198 | Linear SVM | 5-fold CV | 93.90% |
+| Experiment | Dataset | Model | Evaluation | Accuracy | Macro F1 | Weighted F1 |
+|---|---|---|---|---:|---:|---:|
+| 1 | v1 — 150 | Logistic Regression | 80/20 split | 76.67% | — | — |
+| 2 | v2 — 180 | Logistic Regression | 80/20 split | 86.11% | — | — |
+| 3 | v3 — 198 | Logistic Regression | 80/20 split | 87.50% | 0.88 | — |
+| 4 | v3 — 198 | Linear SVM | 80/20 split | 87.50% | 0.88 | — |
+| 5 | v3 — 198 | Logistic Regression | 5-fold CV | 88.86% | 88.56% | 88.76% |
+| 5 | v3 — 198 | Linear SVM | 5-fold CV | 93.90% | 93.74% | 93.82% |
 
 ### Current Findings
 
 The experiments show that dataset refinement and model evaluation methodology affect the measured classification performance.
 
-The v3 dataset and 5-fold cross-validation provide the current basis for further model evaluation. Because the current dataset is synthetic, real anonymized campus complaints will be important for future validation.
+The v3 dataset and 5-fold cross-validation provide the current basis for further model evaluation.
+
+On the current synthetic dataset, the Linear SVM produced higher mean cross-validation values across Accuracy, Macro F1-score, and Weighted F1-score than Logistic Regression.
+
+Because the current dataset is synthetic, real anonymized campus complaints will be important for future validation and assessment of real-world generalization.
