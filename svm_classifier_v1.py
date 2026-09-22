@@ -5,7 +5,7 @@ import joblib
 
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import LogisticRegression
+from sklearn.svm import LinearSVC
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
 from department_mapping import get_department
@@ -43,7 +43,7 @@ X_test_tfidf = vectorizer.transform(X_test_raw)
 
 
 # 5. Train Logistic Regression model
-model = LogisticRegression(max_iter=1000)
+model = LinearSVC()
 
 model.fit(X_train_tfidf, y_train)
 
