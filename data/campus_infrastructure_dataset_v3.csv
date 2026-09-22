@@ -1,0 +1,199 @@
+id,complaint_text,category,location,source
+1,Fan not working in classroom 204,Electrical,Classroom 204,synthetic
+2,the light in lab 2 is gone,Electrical,Lab 2,synthetic
+3,Tube light is flickering near library entrance,Electrical,Library entrance,synthetic
+4,Power socket is damaged in the computer lab,Electrical,Computer Lab,synthetic
+5,Classroom switchboard is not working,Electrical,Block A classroom,synthetic
+6,No power in the seminar hall,Electrical,Seminar Hall,synthetic
+7,Ceiling fan stopped suddenly in room 105,Electrical,Room 105,synthetic
+8,The corridor light outside the hostel is not working,Electrical,Hostel corridor,synthetic
+9,One of the switches is sparking in the lab,Electrical,Laboratory,synthetic
+10,Please check the electrical socket near the staff room,Electrical,Staff Room,synthetic
+11,Lights keep going off in the classroom,Electrical,Classroom,synthetic
+12,The fan regulator is not working properly,Electrical,Classroom 301,synthetic
+13,There is an exposed wire near the staircase,Electrical,Staircase,synthetic
+14,Emergency light is not working in Block B,Electrical,Block B,synthetic
+15,The bulb outside the washroom needs replacement,Electrical,Ground-floor washroom,synthetic
+16,AC power connection is not working in the office,Electrical,Administrative Office,synthetic
+17,Two tube lights are dead in the corridor,Electrical,First-floor corridor,synthetic
+18,Switch near the projector is broken,Electrical,Classroom 202,synthetic
+19,Fan making noise and not rotating properly,Electrical,Room 210,synthetic
+20,power problem in cse lab pls fix,Electrical,CSE Lab,synthetic
+21,The socket near my desk has no power,Electrical,Classroom 106,synthetic
+22,Light is very dim in the library,Electrical,Library,synthetic
+23,The electrical panel door is damaged,Electrical,Electrical room,synthetic
+24,Fan not turning on since morning,Electrical,Classroom 305,synthetic
+25,Please repair the faulty switch in the office,Electrical,Office,synthetic
+26,Water tap is leaking in the hostel bathroom,Plumbing,Boys Hostel,synthetic
+27,tap leaking badly near canteen,Plumbing,Canteen,synthetic
+28,Water is coming out from the pipe near Block A,Plumbing,Block A,synthetic
+29,Wash basin is blocked in the ground floor washroom,Plumbing,Ground-floor washroom,synthetic
+30,There is no water supply in the hostel,Plumbing,Hostel,synthetic
+31,Toilet flush is not working,Plumbing,Girls Hostel washroom,synthetic
+32,Drain near the canteen is overflowing,Plumbing,Canteen,synthetic
+33,Bathroom pipe has been leaking since morning,Plumbing,Hostel bathroom,synthetic
+34,Water is collecting because the drain is blocked,Plumbing,Main building washroom,synthetic
+35,The tap does not stop running,Plumbing,Library washroom,synthetic
+36,Pipe joint is leaking near the laboratory,Plumbing,Laboratory,synthetic
+37,Washroom tap is broken pls repair,Plumbing,Second-floor washroom,synthetic
+38,There is water leakage from the ceiling pipe,Plumbing,First-floor corridor,synthetic
+39,No water in the boys hostel bathroom,Plumbing,Boys Hostel,synthetic
+40,Drain blockage near the auditorium,Plumbing,Auditorium,synthetic
+41,The sink is clogged in the staff washroom,Plumbing,Staff washroom,synthetic
+42,Water is overflowing from the wash basin,Plumbing,Canteen washroom,synthetic
+43,Please fix the leaking tap in room 12,Plumbing,Hostel room 12,synthetic
+44,Bathroom flush keeps running,Plumbing,Hostel washroom,synthetic
+45,Water line near Block B needs repair,Plumbing,Block B,synthetic
+46,Pipe burst near the main entrance,Plumbing,Main entrance,synthetic
+47,The washroom has a blocked drain,Plumbing,Library washroom,synthetic
+48,Tap is dripping continuously in the lab washroom,Plumbing,Lab washroom,synthetic
+49,There is no water coming from the tap,Plumbing,Administrative building,synthetic
+50,Water leaking around the toilet area,Plumbing,Ground-floor washroom,synthetic
+51,Large crack on the wall of classroom 302,Civil,Classroom 302,synthetic
+52,Floor tiles are broken near the lab entrance,Civil,Laboratory entrance,synthetic
+53,Plaster is falling from the ceiling in Block B,Civil,Block B,synthetic
+54,Staircase railing is damaged near the library,Civil,Library staircase,synthetic
+55,Classroom window frame is broken,Civil,Classroom,synthetic
+56,Roof is leaking during rain,Civil,Main building roof,synthetic
+57,Wall plaster is coming off in the corridor,Civil,First-floor corridor,synthetic
+58,Floor has become uneven near the entrance,Civil,Main entrance,synthetic
+59,There is a crack in the building wall,Civil,Block A,synthetic
+60,Ceiling has visible damage in the seminar hall,Civil,Seminar Hall,synthetic
+61,A portion of the staircase is damaged,Civil,Staircase,synthetic
+62,Door frame is damaged in room 210,Civil,Room 210,synthetic
+63,Broken floor tile in front of the library,Civil,Library,synthetic
+64,Concrete is damaged near the parking area,Civil,Parking area,synthetic
+65,Window glass frame is loose in the classroom,Civil,Classroom 108,synthetic
+66,Wall crack getting bigger near the office,Civil,Administrative Office,synthetic
+67,Ceiling plaster has fallen in the lab,Civil,Physics Lab,synthetic
+68,The corridor flooring is broken,Civil,Second-floor corridor,synthetic
+69,There is a hole in the wall near the staircase,Civil,Staircase,synthetic
+70,Roof damage reported near the hostel,Civil,Hostel,synthetic
+71,Classroom door frame needs repair,Civil,Classroom 205,synthetic
+72,Floor tiles are coming loose in Block C,Civil,Block C,synthetic
+73,Wall is damp and damaged near the washroom,Civil,Washroom corridor,synthetic
+74,The staircase step is cracked,Civil,Main staircase,synthetic
+75,Building plaster is damaged near the entrance,Civil,Main entrance,synthetic
+76,Chair is broken in classroom 205,Furniture,Classroom 205,synthetic
+77,Several desks in the CSE lab are damaged,Furniture,CSE Lab,synthetic
+78,Table leg is loose in the staff room,Furniture,Staff Room,synthetic
+79,Cupboard door is broken in the office,Furniture,Administrative Office,synthetic
+80,Bench in the seminar hall needs repair,Furniture,Seminar Hall,synthetic
+81,Chair backrest is broken,Furniture,Classroom 104,synthetic
+82,Laboratory stool is damaged,Furniture,Chemistry Lab,synthetic
+83,Desk drawer is not closing properly,Furniture,Classroom 201,synthetic
+84,Bench is missing one leg,Furniture,Classroom 303,synthetic
+85,Office table needs repair,Furniture,Admin Office,synthetic
+86,Library chair is damaged,Furniture,Library,synthetic
+87,Cupboard hinge is broken,Furniture,Department Office,synthetic
+88,Two classroom chairs are broken,Furniture,Classroom 101,synthetic
+89,The desk is unstable in the lab,Furniture,Computer Lab,synthetic
+90,Hostel study table is damaged,Furniture,Boys Hostel,synthetic
+91,A bench has become loose,Furniture,Classroom 210,synthetic
+92,The cupboard lock is damaged,Furniture,Staff Room,synthetic
+93,Broken chair near the reception,Furniture,Reception,synthetic
+94,Table surface is damaged,Furniture,Seminar Hall,synthetic
+95,Several benches need maintenance,Furniture,Lecture Hall,synthetic
+96,Door of the storage cupboard is broken,Furniture,Store Room,synthetic
+97,Chair leg is loose pls fix,Furniture,Classroom 202,synthetic
+98,The lab stool cannot be used,Furniture,Mechanical Lab,synthetic
+99,Desk is broken in room 305,Furniture,Room 305,synthetic
+100,Furniture in the classroom needs repair,Furniture,Classroom 106,synthetic
+101,Wi-Fi is not working in the computer lab,Networking,Computer Lab,synthetic
+102,There is no internet connection in the library,Networking,Library,synthetic
+103,LAN port is not working in classroom 201,Networking,Classroom 201,synthetic
+104,Wi-Fi signal is very weak in Block A,Networking,Block A,synthetic
+105,Internet keeps disconnecting in the CSE lab,Networking,CSE Lab,synthetic
+106,Network cable is damaged near the office,Networking,Administrative Office,synthetic
+107,Computer cannot connect to the campus network,Networking,Computer Lab,synthetic
+108,No wifi in hostel room,Networking,Boys Hostel,synthetic
+109,Network point is dead in the lab,Networking,Electronics Lab,synthetic
+110,Internet connection is very slow in the library,Networking,Library,synthetic
+111,LAN connection is down in room 204,Networking,Room 204,synthetic
+112,WiFi not available in seminar hall,Networking,Seminar Hall,synthetic
+113,The network socket is not working,Networking,Classroom 301,synthetic
+114,Students cannot access campus Wi-Fi from Block B,Networking,Block B,synthetic
+115,Network keeps dropping in the computer lab,Networking,Computer Lab,synthetic
+116,Router connection has a problem near the office,Networking,Office,synthetic
+117,Wired internet is unavailable in the lab,Networking,Mechanical Lab,synthetic
+118,Please fix the Wi-Fi in the library,Networking,Library,synthetic
+119,No network connection in classroom 102,Networking,Classroom 102,synthetic
+120,LAN cable seems damaged near the server room,Networking,Server Room,synthetic
+121,wifi not working pls check,Networking,CSE Lab,synthetic
+122,Internet disconnected since morning,Networking,Computer Lab,synthetic
+123,Network port does not detect the cable,Networking,Classroom 208,synthetic
+124,Hostel Wi-Fi is not connecting,Networking,Girls Hostel,synthetic
+125,Campus network unavailable near reception,Networking,Reception,synthetic
+126,The washroom near the auditorium is not clean,Sanitation,Auditorium washroom,synthetic
+127,There is a bad smell near the ground-floor washroom,Sanitation,Ground-floor washroom,synthetic
+128,Garbage has not been collected near the canteen,Sanitation,Canteen,synthetic
+129,Dustbins are overflowing outside the hostel,Sanitation,Hostel,synthetic
+130,The corridor needs cleaning,Sanitation,First-floor corridor,synthetic
+131,The area around the canteen is dirty,Sanitation,Canteen,synthetic
+132,Toilet needs cleaning in the library block,Sanitation,Library block,synthetic
+133,Waste is lying around near the main entrance,Sanitation,Main entrance,synthetic
+134,Classroom floor is dirty,Sanitation,Classroom 201,synthetic
+135,Common area needs urgent cleaning,Sanitation,Student common area,synthetic
+136,Garbage has accumulated behind the building,Sanitation,Backside of main building,synthetic
+137,Washroom cleaning has not been done,Sanitation,Boys Hostel washroom,synthetic
+138,Dustbin is full and overflowing,Sanitation,Library,synthetic
+139,There is a bad smell in the hostel corridor,Sanitation,Hostel corridor,synthetic
+140,Canteen area has not been cleaned,Sanitation,Canteen,synthetic
+141,Garbage collection is delayed near Block B,Sanitation,Block B,synthetic
+142,The washroom is dirty and needs attention,Sanitation,Ground-floor washroom,synthetic
+143,Waste is scattered near the parking area,Sanitation,Parking area,synthetic
+144,Corridor floor is very dirty,Sanitation,Second-floor corridor,synthetic
+145,Please clean the wash basin area,Sanitation,Staff washroom,synthetic
+146,The dustbin outside the lab is overflowing,Sanitation,Laboratory,synthetic
+147,Washroom smells bad since morning,Sanitation,Library washroom,synthetic
+148,Garbage is not being removed from the hostel,Sanitation,Girls Hostel,synthetic
+149,The common room needs cleaning,Sanitation,Student common room,synthetic
+150,Sanitation problem near the main building,Sanitation,Main building,synthetic
+151,A desk drawer is stuck and cannot be opened,Furniture,Library,synthetic
+152,The classroom chair is broken and needs repair,Furniture,Room 201,synthetic
+153,A wooden table leg is damaged,Furniture,Seminar Hall,synthetic
+154,The cupboard door is not closing properly,Furniture,Office Block,synthetic
+155,Several desks have damaged drawers,Furniture,Computer Lab,synthetic
+156,A power cable is exposed near the staircase,Electrical,Main Block,synthetic
+157,There is a loose electrical wire in the classroom,Electrical,Room 102,synthetic
+158,The electrical switch is sparking,Electrical,Laboratory,synthetic
+159,A damaged wire is hanging from the ceiling,Electrical,Academic Block,synthetic
+160,The classroom power socket is not working,Electrical,Room 204,synthetic
+161,The washbasin tap is broken,Plumbing,Washroom,synthetic
+162,Water is leaking from the bathroom tap,Plumbing,Hostel Block,synthetic
+163,The toilet flush is not functioning,Plumbing,Hostel Washroom,synthetic
+164,The sink tap needs to be replaced,Plumbing,Canteen,synthetic
+165,Water is leaking from a pipe near the washroom,Plumbing,Main Block,synthetic
+166,Rainwater is entering through the damaged roof,Civil,Main Block,synthetic
+167,The classroom ceiling has visible cracks,Civil,Room 305,synthetic
+168,There is a crack in the corridor wall,Civil,Academic Block,synthetic
+169,Tiles on the corridor floor are broken,Civil,Main Block,synthetic
+170,The roof has damaged concrete and needs repair,Civil,Library Block,synthetic
+171,The dustbin near the hostel is overflowing,Sanitation,Hostel Block,synthetic
+172,Garbage has accumulated near the laboratory,Sanitation,Science Block,synthetic
+173,The waste bin in the corridor is full,Sanitation,Academic Block,synthetic
+174,Trash has not been collected from the hostel area,Sanitation,Hostel Block,synthetic
+175,The garbage bins outside the classroom are overflowing,Sanitation,Academic Block,synthetic
+176,The Wi-Fi connection is not working in the classroom,Networking,Room 101,synthetic
+177,There is no internet connection in the computer lab,Networking,Computer Lab,synthetic
+178,The network cable is damaged near the server room,Networking,Server Room,synthetic
+179,Campus Wi-Fi is very slow in the library,Networking,Library,synthetic
+180,The network port is not working in the office,Networking,Office Block,synthetic
+181,The electrical socket is damaged in the classroom,Electrical,Room 101,synthetic
+182,The light switch is not working in the laboratory,Electrical,Laboratory,synthetic
+183,A loose power wire is visible near the classroom,Electrical,Room 202,synthetic
+184,The ceiling fan is not receiving electrical power,Electrical,Room 305,synthetic
+185,There is a short circuit in the office power socket,Electrical,Office Block,synthetic
+186,The Wi-Fi signal is unavailable in the classroom,Networking,Room 101,synthetic
+187,Students cannot connect to the campus internet,Networking,Academic Block,synthetic
+188,The LAN connection is not working in the computer lab,Networking,Computer Lab,synthetic
+189,The network router is not functioning properly,Networking,Server Room,synthetic
+190,The internet connection keeps disconnecting in the office,Networking,Office Block,synthetic
+191,The classroom roof has a large crack,Civil,Room 301,synthetic
+192,Floor tiles are broken near the staircase,Civil,Main Block,synthetic
+193,The corridor wall has developed a structural crack,Civil,Academic Block,synthetic
+194,Water is leaking from a damaged pipe,Plumbing,Main Block,synthetic
+195,The bathroom tap is continuously leaking water,Plumbing,Washroom,synthetic
+196,The toilet flush is not supplying water properly,Plumbing,Hostel Washroom,synthetic
+197,Garbage has not been removed from the classroom area,Sanitation,Academic Block,synthetic
+198,The waste bin is overflowing near the hostel,Sanitation,Hostel Block,synthetic
