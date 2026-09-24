@@ -3,9 +3,9 @@ import joblib
 from department_mapping import get_department
 
 
-# Load trained model and TF-IDF vectorizer
-model = joblib.load("models/complaint_classifier.joblib")
-vectorizer = joblib.load("models/tfidf_vectorizer.joblib")
+# Load final trained model and TF-IDF vectorizer
+model = joblib.load("models/final_complaint_classifier.joblib")
+vectorizer = joblib.load("models/final_tfidf_vectorizer.joblib")
 
 
 # Get complaint from user
