@@ -473,6 +473,105 @@ app.post("/api/complaints/:id/assign", async (req, res) => {
     }
 });
 
+// Update complaint status
+app.patch("/api/complaints/:id/status", async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const allowedStatuses = [
+        "Pending",
+        "Assigned",
+        "In Progress",
+        "Resolved"
+    ];
+
+    if (!status) {
+        return res.status(400).json({
+            error: "status is required"
+        });
+    }
+
+    if (!allowedStatuses.includes(status)) {
+        return res.status(400).json({
+            error: "Invalid complaint status"
+        });
+    }
+
+    try {
+        // Check whether the complaint exists
+        const complaintResult = await pool.query(
+            `SELECT id, status
+             FROM complaints
+             WHERE id = $1`,
+            [id]
+        );
+
+        if (complaintResult.rows.length === 0) {
+            return res.status(404).json({
+                error: "Complaint not found"
+            });
+        }
+
+        // Start transaction
+        const client = await pool.connect();
+
+        try {
+            await client.query("BEGIN");
+
+            // Update complaint status
+            const updatedComplaintResult = await client.query(
+                `UPDATE complaints
+                 SET status = $1,
+                     updated_at = CURRENT_TIMESTAMP
+                 WHERE id = $2
+                 RETURNING *`,
+                [status, id]
+            );
+
+            // Record status change
+            await client.query(
+                `INSERT INTO status_history
+                 (complaint_id, status, changed_by)
+                 VALUES ($1, $2, $3)`,
+                [
+                    id,
+                    status,
+                    null
+                ]
+            );
+
+            // Commit both changes
+            await client.query("COMMIT");
+
+            res.json({
+                message: "Complaint status updated successfully",
+                complaint: updatedComplaintResult.rows[0]
+            });
+
+        } catch (error) {
+            // Undo all changes if anything fails
+            await client.query("ROLLBACK");
+
+            console.error("Status update transaction failed:", error);
+
+            res.status(500).json({
+                error: "Failed to update complaint status"
+            });
+
+        } finally {
+            // Return connection to pool
+            client.release();
+        }
+
+    } catch (error) {
+        console.error("Failed to process status update:", error);
+
+        res.status(500).json({
+            error: "Failed to process status update"
+        });
+    }
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
