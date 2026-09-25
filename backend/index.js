@@ -256,6 +256,66 @@ app.get("/api/complaints", async (req, res) => {
   }
 });
 
+
+// Get a single complaint by ID
+app.get("/api/complaints/:id", async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const complaintResult = await pool.query(
+            `SELECT
+                c.id,
+                c.user_id,
+                c.complaint_text,
+                c.category,
+                d.name AS department,
+                c.status,
+                c.latitude,
+                c.longitude,
+                c.created_at,
+                c.updated_at
+            FROM complaints c
+            JOIN departments d
+                ON c.department_id = d.id
+            WHERE c.id = $1`,
+            [id]
+        );
+
+        if (complaintResult.rows.length === 0) {
+            return res.status(404).json({
+                error: "Complaint not found"
+            });
+        }
+
+        const historyResult = await pool.query(
+            `SELECT
+                sh.id,
+                sh.status,
+                sh.changed_by,
+                sh.changed_at,
+                u.name AS changed_by_name
+            FROM status_history sh
+            LEFT JOIN users u
+                ON sh.changed_by = u.id
+            WHERE sh.complaint_id = $1
+            ORDER BY sh.changed_at ASC`,
+            [id]
+        );
+
+        res.json({
+            complaint: complaintResult.rows[0],
+            status_history: historyResult.rows
+        });
+
+    } catch (error) {
+        console.error("Failed to fetch complaint:", error);
+
+        res.status(500).json({
+            error: "Failed to fetch complaint"
+        });
+    }
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
