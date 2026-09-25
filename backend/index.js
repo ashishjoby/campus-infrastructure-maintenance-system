@@ -151,32 +151,66 @@ app.post("/api/complaints", async (req, res) => {
 
                 const departmentId = departmentResult.rows[0].id;
 
-                // Save complaint
-                const complaintResult = await pool.query(
-                    `INSERT INTO complaints
-                    (user_id, complaint_text, category, department_id, latitude, longitude)
-                    VALUES ($1, $2, $3, $4, $5, $6)
-                    RETURNING *`,
-                    [
-                        user_id,
-                        complaint_text,
-                        prediction.category,
-                        departmentId,
-                        latitude || null,
-                        longitude || null
-                    ]
-                );
-                // Record the initial complaint status
-await pool.query(
-    `INSERT INTO status_history
-    (complaint_id, status, changed_by)
-    VALUES ($1, $2, $3)`,
-    [
-        complaintResult.rows[0].id,
-        complaintResult.rows[0].status,
-        user_id
-    ]
-);
+                // Start a database transaction
+const client = await pool.connect();
+
+try {
+    await client.query("BEGIN");
+
+    // Save complaint
+    const complaintResult = await client.query(
+        `INSERT INTO complaints
+        (user_id, complaint_text, category, department_id, latitude, longitude)
+        VALUES ($1, $2, $3, $4, $5, $6)
+        RETURNING *`,
+        [
+            user_id,
+            complaint_text,
+            prediction.category,
+            departmentId,
+            latitude || null,
+            longitude || null
+        ]
+    );
+
+    // Record the initial complaint status
+    await client.query(
+        `INSERT INTO status_history
+        (complaint_id, status, changed_by)
+        VALUES ($1, $2, $3)`,
+        [
+            complaintResult.rows[0].id,
+            complaintResult.rows[0].status,
+            user_id
+        ]
+    );
+
+    // Commit both operations
+    await client.query("COMMIT");
+
+    res.status(201).json({
+        message: "Complaint submitted successfully",
+        complaint: complaintResult.rows[0],
+        prediction: {
+            category: prediction.category,
+            department: prediction.department
+        }
+    });
+
+} catch (error) {
+    // Undo all database changes if anything fails
+    await client.query("ROLLBACK");
+
+    console.error("Complaint transaction failed:", error);
+
+    res.status(500).json({
+        error: "Failed to save complaint"
+    });
+
+} finally {
+    // Return the connection to the pool
+    client.release();
+}
                 res.status(201).json({
                     message: "Complaint submitted successfully",
                     complaint: complaintResult.rows[0],
