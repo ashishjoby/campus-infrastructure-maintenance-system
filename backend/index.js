@@ -361,7 +361,7 @@ app.post("/api/complaints/:id/assign", async (req, res) => {
     try {
         // Find the complaint and its department
         const complaintResult = await pool.query(
-            `SELECT id, department_id
+            `SELECT id, department_id, status
              FROM complaints
              WHERE id = $1`,
             [id]
@@ -398,30 +398,77 @@ app.post("/api/complaints/:id/assign", async (req, res) => {
             });
         }
 
-        // Create the assignment
-        const assignmentResult = await pool.query(
-            `INSERT INTO assignments
-             (complaint_id, staff_id)
-             VALUES ($1, $2)
-             RETURNING *`,
-            [id, staff_id]
-        );
+        // Start transaction
+        const client = await pool.connect();
 
-        res.status(201).json({
-            message: "Staff member assigned successfully",
-            assignment: assignmentResult.rows[0],
-            staff: {
-                id: staff.id,
-                name: staff.name,
-                email: staff.email
-            }
-        });
+        try {
+            await client.query("BEGIN");
+
+            // Create the assignment
+            const assignmentResult = await client.query(
+                `INSERT INTO assignments
+                (complaint_id, staff_id)
+                VALUES ($1, $2)
+                RETURNING *`,
+                [id, staff_id]
+            );
+
+            // Update complaint status
+            const updatedComplaintResult = await client.query(
+                `UPDATE complaints
+                SET status = 'Assigned',
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE id = $1
+                RETURNING *`,
+                [id]
+            );
+
+            // Record status change
+            await client.query(
+                `INSERT INTO status_history
+                (complaint_id, status, changed_by)
+                VALUES ($1, $2, $3)`,
+                [
+                    id,
+                    "Assigned",
+                    null
+                ]
+            );
+
+            // Commit all changes
+            await client.query("COMMIT");
+
+            res.status(201).json({
+                message: "Staff member assigned successfully",
+                assignment: assignmentResult.rows[0],
+                complaint: updatedComplaintResult.rows[0],
+                staff: {
+                    id: staff.id,
+                    name: staff.name,
+                    email: staff.email
+                }
+            });
+
+        } catch (error) {
+            // Undo all transaction changes if anything fails
+            await client.query("ROLLBACK");
+
+            console.error("Assignment transaction failed:", error);
+
+            res.status(500).json({
+                error: "Failed to assign staff"
+            });
+
+        } finally {
+            // Return connection to pool
+            client.release();
+        }
 
     } catch (error) {
-        console.error("Failed to assign staff:", error);
+        console.error("Failed to process staff assignment:", error);
 
         res.status(500).json({
-            error: "Failed to assign staff"
+            error: "Failed to process staff assignment"
         });
     }
 });
