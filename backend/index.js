@@ -316,6 +316,37 @@ app.get("/api/complaints/:id", async (req, res) => {
     }
 });
 
+// Get staff members by department
+app.get("/api/staff/department/:departmentId", async (req, res) => {
+    const { departmentId } = req.params;
+
+    try {
+        const result = await pool.query(
+            `SELECT
+                s.id,
+                s.name,
+                s.email,
+                s.department_id,
+                d.name AS department
+            FROM staff s
+            JOIN departments d
+                ON s.department_id = d.id
+            WHERE s.department_id = $1
+            ORDER BY s.name ASC`,
+            [departmentId]
+        );
+
+        res.json(result.rows);
+
+    } catch (error) {
+        console.error("Failed to fetch department staff:", error);
+
+        res.status(500).json({
+            error: "Failed to fetch department staff"
+        });
+    }
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
