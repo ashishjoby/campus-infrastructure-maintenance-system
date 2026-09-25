@@ -2,10 +2,10 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const { spawn } = require("child_process");
-const dotenv=require("dotenv");
+const dotenv = require("dotenv");
 
 dotenv.config({
-    path: path.join(__dirname, ".env")
+  path: path.join(__dirname, ".env"),
 });
 const pool = require("./db");
 
@@ -20,226 +20,243 @@ const PROJECT_ROOT = path.join(__dirname, "..");
 app.use(cors());
 app.use(express.json());
 
-
 // Health check route
 app.get("/", (req, res) => {
-    res.json({
-        message: "Campus Infrastructure Maintenance API is running"
-    });
+  res.json({
+    message: "Campus Infrastructure Maintenance API is running",
+  });
 });
-
 
 // ML prediction route
 app.post("/api/complaints/predict", (req, res) => {
-    const { complaint } = req.body;
+  const { complaint } = req.body;
 
-    if (!complaint || !complaint.trim()) {
-        return res.status(400).json({
-            error: "Complaint text is required"
-        });
+  if (!complaint || !complaint.trim()) {
+    return res.status(400).json({
+      error: "Complaint text is required",
+    });
+  }
+
+  const pythonProcess = spawn("python", ["ml_service.py"], {
+    cwd: PROJECT_ROOT,
+  });
+
+  let output = "";
+  let errorOutput = "";
+
+  pythonProcess.stdout.on("data", (data) => {
+    output += data.toString();
+  });
+
+  pythonProcess.stderr.on("data", (data) => {
+    errorOutput += data.toString();
+  });
+
+  pythonProcess.on("close", (code) => {
+    if (code !== 0) {
+      console.error("Python ML service error:", errorOutput);
+
+      return res.status(500).json({
+        error: "ML prediction failed",
+      });
     }
 
+    try {
+      const result = JSON.parse(output);
+
+      if (result.error) {
+        return res.status(400).json(result);
+      }
+
+      res.json(result);
+    } catch (error) {
+      console.error("Invalid ML response:", output);
+
+      res.status(500).json({
+        error: "Invalid response from ML service",
+      });
+    }
+  });
+
+  // Send complaint to Python service
+  pythonProcess.stdin.write(complaint);
+  pythonProcess.stdin.end();
+});
+
+// Create a new complaint
+app.post("/api/complaints", async (req, res) => {
+  const { user_id, complaint_text, latitude, longitude } = req.body;
+
+  if (!user_id || !complaint_text || !complaint_text.trim()) {
+    return res.status(400).json({
+      error: "user_id and complaint_text are required",
+    });
+  }
+
+  try {
+    // Ask the ML service to classify the complaint
     const pythonProcess = spawn("python", ["ml_service.py"], {
-        cwd: PROJECT_ROOT
+      cwd: PROJECT_ROOT,
     });
 
     let output = "";
     let errorOutput = "";
 
     pythonProcess.stdout.on("data", (data) => {
-        output += data.toString();
+      output += data.toString();
     });
 
     pythonProcess.stderr.on("data", (data) => {
-        errorOutput += data.toString();
+      errorOutput += data.toString();
     });
 
-    pythonProcess.on("close", (code) => {
-        if (code !== 0) {
-            console.error("Python ML service error:", errorOutput);
+    pythonProcess.stdin.write(complaint_text);
+    pythonProcess.stdin.end();
 
-            return res.status(500).json({
-                error: "ML prediction failed"
-            });
+    pythonProcess.on("close", async (code) => {
+      if (code !== 0) {
+        console.error("Python ML service error:", errorOutput);
+
+        return res.status(500).json({
+          error: "ML prediction failed",
+        });
+      }
+
+      try {
+        const prediction = JSON.parse(output);
+
+        if (prediction.error) {
+          return res.status(400).json(prediction);
         }
+
+        // Find department ID
+        const departmentResult = await pool.query(
+          "SELECT id FROM departments WHERE name = $1",
+          [prediction.department],
+        );
+
+        if (departmentResult.rows.length === 0) {
+          return res.status(500).json({
+            error: "Department not found",
+          });
+        }
+
+        const departmentId = departmentResult.rows[0].id;
+
+        // Start a database transaction
+        const client = await pool.connect();
 
         try {
-            const result = JSON.parse(output);
+          await client.query("BEGIN");
 
-            if (result.error) {
-                return res.status(400).json(result);
-            }
-
-            res.json(result);
-        } catch (error) {
-            console.error("Invalid ML response:", output);
-
-            res.status(500).json({
-                error: "Invalid response from ML service"
-            });
-        }
-    });
-
-    // Send complaint to Python service
-    pythonProcess.stdin.write(complaint);
-    pythonProcess.stdin.end();
-});
-
-
-// Create a new complaint
-app.post("/api/complaints", async (req, res) => {
-    const {
-        user_id,
-        complaint_text,
-        latitude,
-        longitude
-    } = req.body;
-
-    if (!user_id || !complaint_text || !complaint_text.trim()) {
-        return res.status(400).json({
-            error: "user_id and complaint_text are required"
-        });
-    }
-
-    try {
-        // Ask the ML service to classify the complaint
-        const pythonProcess = spawn("python", ["ml_service.py"], {
-            cwd: PROJECT_ROOT
-        });
-
-        let output = "";
-        let errorOutput = "";
-
-        pythonProcess.stdout.on("data", (data) => {
-            output += data.toString();
-        });
-
-        pythonProcess.stderr.on("data", (data) => {
-            errorOutput += data.toString();
-        });
-
-        pythonProcess.stdin.write(complaint_text);
-        pythonProcess.stdin.end();
-
-        pythonProcess.on("close", async (code) => {
-            if (code !== 0) {
-                console.error("Python ML service error:", errorOutput);
-
-                return res.status(500).json({
-                    error: "ML prediction failed"
-                });
-            }
-
-            try {
-                const prediction = JSON.parse(output);
-
-                if (prediction.error) {
-                    return res.status(400).json(prediction);
-                }
-
-                // Find department ID
-                const departmentResult = await pool.query(
-                    "SELECT id FROM departments WHERE name = $1",
-                    [prediction.department]
-                );
-
-                if (departmentResult.rows.length === 0) {
-                    return res.status(500).json({
-                        error: "Department not found"
-                    });
-                }
-
-                const departmentId = departmentResult.rows[0].id;
-
-                // Start a database transaction
-const client = await pool.connect();
-
-try {
-    await client.query("BEGIN");
-
-    // Save complaint
-    const complaintResult = await client.query(
-        `INSERT INTO complaints
+          // Save complaint
+          const complaintResult = await client.query(
+            `INSERT INTO complaints
         (user_id, complaint_text, category, department_id, latitude, longitude)
         VALUES ($1, $2, $3, $4, $5, $6)
         RETURNING *`,
-        [
-            user_id,
-            complaint_text,
-            prediction.category,
-            departmentId,
-            latitude || null,
-            longitude || null
-        ]
-    );
+            [
+              user_id,
+              complaint_text,
+              prediction.category,
+              departmentId,
+              latitude || null,
+              longitude || null,
+            ],
+          );
 
-    // Record the initial complaint status
-    await client.query(
-        `INSERT INTO status_history
+          // Record the initial complaint status
+          await client.query(
+            `INSERT INTO status_history
         (complaint_id, status, changed_by)
         VALUES ($1, $2, $3)`,
-        [
-            complaintResult.rows[0].id,
-            complaintResult.rows[0].status,
-            user_id
-        ]
-    );
+            [
+              complaintResult.rows[0].id,
+              complaintResult.rows[0].status,
+              user_id,
+            ],
+          );
 
-    // Commit both operations
-    await client.query("COMMIT");
+          // Commit both operations
+          await client.query("COMMIT");
 
-    res.status(201).json({
-        message: "Complaint submitted successfully",
-        complaint: complaintResult.rows[0],
-        prediction: {
-            category: prediction.category,
-            department: prediction.department
+          res.status(201).json({
+            message: "Complaint submitted successfully",
+            complaint: complaintResult.rows[0],
+            prediction: {
+              category: prediction.category,
+              department: prediction.department,
+            },
+          });
+        } catch (error) {
+          // Undo all database changes if anything fails
+          await client.query("ROLLBACK");
+
+          console.error("Complaint transaction failed:", error);
+
+          res.status(500).json({
+            error: "Failed to save complaint",
+          });
+        } finally {
+          // Return the connection to the pool
+          client.release();
         }
-    });
-
-} catch (error) {
-    // Undo all database changes if anything fails
-    await client.query("ROLLBACK");
-
-    console.error("Complaint transaction failed:", error);
-
-    res.status(500).json({
-        error: "Failed to save complaint"
-    });
-
-} finally {
-    // Return the connection to the pool
-    client.release();
-}
-                res.status(201).json({
-                    message: "Complaint submitted successfully",
-                    complaint: complaintResult.rows[0],
-                    prediction: {
-                        category: prediction.category,
-                        department: prediction.department
-                    }
-                });
-
-            } catch (error) {
-                console.error("Complaint processing error:", error);
-
-                res.status(500).json({
-                    error: "Failed to save complaint"
-                });
-            }
+        res.status(201).json({
+          message: "Complaint submitted successfully",
+          complaint: complaintResult.rows[0],
+          prediction: {
+            category: prediction.category,
+            department: prediction.department,
+          },
         });
-
-    } catch (error) {
-        console.error("Complaint submission error:", error);
+      } catch (error) {
+        console.error("Complaint processing error:", error);
 
         res.status(500).json({
-            error: "Complaint submission failed"
+          error: "Failed to save complaint",
         });
-    }
+      }
+    });
+  } catch (error) {
+    console.error("Complaint submission error:", error);
+
+    res.status(500).json({
+      error: "Complaint submission failed",
+    });
+  }
 });
 
+// Get all complaints
+app.get("/api/complaints", async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT
+                c.id,
+                c.complaint_text,
+                c.category,
+                d.name AS department,
+                c.status,
+                c.latitude,
+                c.longitude,
+                c.created_at,
+                c.updated_at
+            FROM complaints c
+            JOIN departments d
+                ON c.department_id = d.id
+            ORDER BY c.created_at DESC`,
+    );
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Failed to fetch complaints:", error);
+
+    res.status(500).json({
+      error: "Failed to fetch complaints",
+    });
+  }
+});
 
 // Start server
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
