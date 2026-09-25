@@ -347,6 +347,85 @@ app.get("/api/staff/department/:departmentId", async (req, res) => {
     }
 });
 
+// Assign a staff member to a complaint
+app.post("/api/complaints/:id/assign", async (req, res) => {
+    const { id } = req.params;
+    const { staff_id } = req.body;
+
+    if (!staff_id) {
+        return res.status(400).json({
+            error: "staff_id is required"
+        });
+    }
+
+    try {
+        // Find the complaint and its department
+        const complaintResult = await pool.query(
+            `SELECT id, department_id
+             FROM complaints
+             WHERE id = $1`,
+            [id]
+        );
+
+        if (complaintResult.rows.length === 0) {
+            return res.status(404).json({
+                error: "Complaint not found"
+            });
+        }
+
+        const complaint = complaintResult.rows[0];
+
+        // Find the staff member and their department
+        const staffResult = await pool.query(
+            `SELECT id, name, email, department_id
+             FROM staff
+             WHERE id = $1`,
+            [staff_id]
+        );
+
+        if (staffResult.rows.length === 0) {
+            return res.status(404).json({
+                error: "Staff member not found"
+            });
+        }
+
+        const staff = staffResult.rows[0];
+
+        // Make sure staff belongs to the complaint's department
+        if (staff.department_id !== complaint.department_id) {
+            return res.status(400).json({
+                error: "Staff member does not belong to the complaint's department"
+            });
+        }
+
+        // Create the assignment
+        const assignmentResult = await pool.query(
+            `INSERT INTO assignments
+             (complaint_id, staff_id)
+             VALUES ($1, $2)
+             RETURNING *`,
+            [id, staff_id]
+        );
+
+        res.status(201).json({
+            message: "Staff member assigned successfully",
+            assignment: assignmentResult.rows[0],
+            staff: {
+                id: staff.id,
+                name: staff.name,
+                email: staff.email
+            }
+        });
+
+    } catch (error) {
+        console.error("Failed to assign staff:", error);
+
+        res.status(500).json({
+            error: "Failed to assign staff"
+        });
+    }
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
