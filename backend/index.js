@@ -3,6 +3,7 @@ const cors = require("cors");
 const path = require("path");
 const { spawn } = require("child_process");
 const dotenv = require("dotenv");
+const multer=require("multer");
 
 dotenv.config({
   path: path.join(__dirname, ".env"),
@@ -19,6 +20,36 @@ const PROJECT_ROOT = path.join(__dirname, "..");
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use("/uploads",express.static(path.join(__dirname,"uploads")));
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, path.join(__dirname, "uploads"));
+    },
+
+    filename: function (req, file, cb) {
+        const uniqueName =
+            Date.now() + "-" + Math.round(Math.random() * 1E9);
+
+        cb(null, uniqueName + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({
+    storage: storage,
+
+    fileFilter: function (req, file, cb) {
+        if (file.mimetype.startsWith("image/")) {
+            cb(null, true);
+        } else {
+            cb(new Error("Only image files are allowed"));
+        }
+    },
+
+    limits: {
+        fileSize: 5 * 1024 * 1024
+    }
+});
 
 // Health check route
 app.get("/", (req, res) => {
@@ -571,6 +602,62 @@ app.patch("/api/complaints/:id/status", async (req, res) => {
         });
     }
 });
+
+// Upload complaint attachment
+app.post(
+    "/api/complaints/:id/attachments",
+    upload.single("file"),
+    async (req, res) => {
+        const { id } = req.params;
+
+        if (!req.file) {
+            return res.status(400).json({
+                error: "Image file is required"
+            });
+        }
+
+        try {
+            // Check whether complaint exists
+            const complaintResult = await pool.query(
+                `SELECT id
+                 FROM complaints
+                 WHERE id = $1`,
+                [id]
+            );
+
+            if (complaintResult.rows.length === 0) {
+                return res.status(404).json({
+                    error: "Complaint not found"
+                });
+            }
+
+            // Save attachment information
+            const attachmentResult = await pool.query(
+                `INSERT INTO attachments
+                 (complaint_id, file_url, file_type)
+                 VALUES ($1, $2, $3)
+                 RETURNING *`,
+                [
+                    id,
+                    `/uploads/${req.file.filename}`,
+                    req.file.mimetype
+                ]
+            );
+
+            res.status(201).json({
+                message: "Attachment uploaded successfully",
+                attachment: attachmentResult.rows[0]
+            });
+
+        } catch (error) {
+            console.error("Attachment upload failed:", error);
+
+            res.status(500).json({
+                error: "Failed to upload attachment"
+            });
+        }
+    }
+);
 
 // Start server
 app.listen(PORT, () => {
