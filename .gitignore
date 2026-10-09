@@ -1,3 +1,4 @@
+
 # Python virtual environment
 .venv/
 venv/
@@ -27,3 +28,10 @@ Thumbs.db
 
 # Node.js dependencies
 node_modules/
+frontend/node_modules/
+frontend/dist/
+
+# Uploaded complaint images
+backend/uploads/*
+!backend/uploads/.gitkeep
+
