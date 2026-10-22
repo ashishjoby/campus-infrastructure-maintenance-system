@@ -107,6 +107,7 @@ function App() {
                     body: JSON.stringify({
                       user_id: 1,
                       complaint_text: complaint,
+                      location_description:location,
                     }),
                   });
 

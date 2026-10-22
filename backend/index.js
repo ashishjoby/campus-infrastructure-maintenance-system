@@ -181,20 +181,24 @@ app.post("/api/complaints", async (req, res) => {
           await client.query("BEGIN");
 
           // Save complaint
-          const complaintResult = await client.query(
-            `INSERT INTO complaints
-        (user_id, complaint_text, category, department_id, latitude, longitude)
-        VALUES ($1, $2, $3, $4, $5, $6)
-        RETURNING *`,
-            [
-              user_id,
-              complaint_text,
-              prediction.category,
-              departmentId,
-              latitude || null,
-              longitude || null,
-            ],
-          );
+          
+const complaintResult = await client.query(
+  `INSERT INTO complaints
+   (user_id, complaint_text, category, department_id,
+    latitude, longitude, location_description)
+   VALUES ($1, $2, $3, $4, $5, $6, $7)
+   RETURNING *`,
+  [
+    user_id,
+    complaint_text,
+    prediction.category,
+    departmentId,
+    latitude || null,
+    longitude || null,
+    req.body.location_description || null,
+  ],
+);
+
 
           // Record the initial complaint status
           await client.query(
@@ -232,14 +236,7 @@ app.post("/api/complaints", async (req, res) => {
           // Return the connection to the pool
           client.release();
         }
-        res.status(201).json({
-          message: "Complaint submitted successfully",
-          complaint: complaintResult.rows[0],
-          prediction: {
-            category: prediction.category,
-            department: prediction.department,
-          },
-        });
+        
       } catch (error) {
         console.error("Complaint processing error:", error);
 
@@ -249,12 +246,14 @@ app.post("/api/complaints", async (req, res) => {
       }
     });
   } catch (error) {
-    console.error("Complaint submission error:", error);
+  console.error("Complaint processing error:", error);
 
+  if (!res.headersSent) {
     res.status(500).json({
-      error: "Complaint submission failed",
+      error: "Failed to save complaint",
     });
   }
+}
 });
 
 // Get all complaints
