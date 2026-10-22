@@ -268,6 +268,7 @@ app.get("/api/complaints", async (req, res) => {
                 c.status,
                 c.latitude,
                 c.longitude,
+                c.location_description,
                 c.created_at,
                 c.updated_at
             FROM complaints c
