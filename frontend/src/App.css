@@ -41,7 +41,7 @@ border-radius: 13px; background: #3e7bfa; font-weight: 800; font-size: 22px;
 
 .nav-label, .eyebrow {
 font-size: 10px; font-weight: 700; letter-spacing: 1.4px;
-color: #8a9bb2; margin: 0 0 12px;
+color: black; margin: 0 0 12px;
 }
 .nav-label { padding: 0 12px; }
 
@@ -66,7 +66,7 @@ border-radius: 50%; background: #dbeafe; color: #2857a6; font-weight: 700;
 .topbar .eyebrow { color: #4878d6; margin-bottom: 8px; }
 h1, h2, h3, p { margin-top: 0; }
 h1 { font: 800 clamp(24px, 3vw, 31px) Manrope, sans-serif; letter-spacing: -1px; margin-bottom: 8px; }
-.subtitle { color: #7c899b; font-size: 13px; margin-bottom: 0; }
+.subtitle { color: black    ; font-size: 13px; margin-bottom: 0; }
 .status-pill {
 display: flex; align-items: center; gap: 8px; background: white;
 border: 1px solid #e6eaf1; border-radius: 24px; padding: 10px 14px;

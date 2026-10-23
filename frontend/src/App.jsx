@@ -45,6 +45,20 @@ function App() {
     return matchesStatus && matchesCategory;
   });
 
+  const totalComplaints = complaints.length;
+
+  const pendingComplaints = complaints.filter(
+    (item) => item.status === "Pending",
+  ).length;
+
+  const inProgressComplaints = complaints.filter(
+    (item) => item.status === "In Progress",
+  ).length;
+
+  const resolvedComplaints = complaints.filter(
+    (item) => item.status === "Resolved",
+  ).length;
+
   return (
     <div className="app">
       {" "}
@@ -97,25 +111,25 @@ function App() {
           <article className="stat-card">
             <span className="stat-icon blue">▤</span>
             <p>Total Complaints</p>
-            <h2>—</h2>
+            <h2>{totalComplaints}</h2>
             <span className="stat-note">Campus-wide overview</span>
           </article>
           <article className="stat-card">
             <span className="stat-icon amber">◷</span>
             <p>Pending</p>
-            <h2>—</h2>
+            <h2>{pendingComplaints}</h2>
             <span className="stat-note">Awaiting assignment</span>
           </article>
           <article className="stat-card">
             <span className="stat-icon violet">⚙</span>
             <p>In Progress</p>
-            <h2>—</h2>
+            <h2>{inProgressComplaints}</h2>
             <span className="stat-note">Under maintenance</span>
           </article>
           <article className="stat-card">
             <span className="stat-icon green">✓</span>
             <p>Resolved</p>
-            <h2>—</h2>
+            <h2>{resolvedComplaints}</h2>
             <span className="stat-note">Completed issues</span>
           </article>
         </section>
