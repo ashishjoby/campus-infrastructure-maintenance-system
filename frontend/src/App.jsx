@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 
 function App() {
@@ -6,6 +6,44 @@ function App() {
   const [location, setLocation] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState("");
+  const [complaints, setComplaints] = useState([]);
+  const [loadingComplaints, setLoadingComplaints] = useState(true);
+  const [complaintError, setComplaintError] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [categoryFilter, setCategoryFilter] = useState("All");
+  useEffect(() => {
+    const fetchComplaints = async () => {
+      try {
+        setLoadingComplaints(true);
+        setComplaintError("");
+
+        const response = await fetch("/api/complaints");
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Failed to load complaints");
+        }
+
+        setComplaints(Array.isArray(data) ? data : data.complaints || []);
+      } catch (error) {
+        setComplaintError(error.message || "Unable to load complaints");
+      } finally {
+        setLoadingComplaints(false);
+      }
+    };
+
+    fetchComplaints();
+  }, []);
+
+  const filteredComplaints = complaints.filter((item) => {
+    const matchesStatus =
+      statusFilter === "All" || item.status === statusFilter;
+
+    const matchesCategory =
+      categoryFilter === "All" || item.category === categoryFilter;
+
+    return matchesStatus && matchesCategory;
+  });
 
   return (
     <div className="app">
@@ -107,7 +145,7 @@ function App() {
                     body: JSON.stringify({
                       user_id: 1,
                       complaint_text: complaint,
-                      location_description:location,
+                      location_description: location,
                     }),
                   });
 
@@ -157,7 +195,8 @@ function App() {
               </div>
 
               <button type="submit">
-                {submitting ? "Submitting..." : "Submit Complaint"} <span>→</span>
+                {submitting ? "Submitting..." : "Submit Complaint"}{" "}
+                <span>→</span>
               </button>
             </form>
           </article>
@@ -179,13 +218,81 @@ function App() {
               </button>
             </div>
 
+            <div className="complaint-filters">
+              <select
+                value={statusFilter}
+                onChange={(event) => setStatusFilter(event.target.value)}
+                aria-label="Filter by status"
+              >
+                <option value="All">All statuses</option>
+                <option value="Pending">Pending</option>
+                <option value="Assigned">Assigned</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Resolved">Resolved</option>
+              </select>
+
+              <select
+                value={categoryFilter}
+                onChange={(event) => setCategoryFilter(event.target.value)}
+                aria-label="Filter by category"
+              >
+                <option value="All">All categories</option>
+                <option value="Electrical">Electrical</option>
+                <option value="Plumbing">Plumbing</option>
+                <option value="Civil">Civil</option>
+                <option value="Furniture">Furniture</option>
+                <option value="Networking">Networking</option>
+                <option value="Sanitation">Sanitation</option>
+              </select>
+            </div>
+
             <div className="empty-state">
-              <div className="empty-icon">▤</div>
-              <h3>Your complaints will appear here</h3>
-              <p>
-                Submit your first report to start tracking its assignment and
-                resolution.
-              </p>
+              {loadingComplaints ? (
+                <p>Loading complaints...</p>
+              ) : complaintError ? (
+                <p role="alert">{complaintError}</p>
+              ) : filteredComplaints.length === 0 ? (
+                <p>No complaints submitted yet.</p>
+              ) : (
+                <div className="complaint-list">
+                  {filteredComplaints.map((item) => (
+                    <article className="complaint-item" key={item.id}>
+                      <div className="complaint-item-header">
+                        <h3>Complaint #{item.id}</h3>
+                        <span className="complaint-status">
+                          {item.status || "Pending"}
+                        </span>
+                      </div>
+
+                      <p>{item.complaint_text}</p>
+
+                      <p>
+                        <strong>Category:</strong>{" "}
+                        {item.category || "Unclassified"}
+                      </p>
+
+                      <p>
+                        <strong>Department:</strong>{" "}
+                        {item.department_name ||
+                          item.department ||
+                          "Unassigned"}
+                      </p>
+
+                      <p>
+                        <strong>Location:</strong>{" "}
+                        {item.location_description || "Not provided"}
+                      </p>
+
+                      <p>
+                        <strong>Submitted:</strong>{" "}
+                        {item.created_at
+                          ? new Date(item.created_at).toLocaleString()
+                          : "Unknown"}
+                      </p>
+                    </article>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div className="workflow">
