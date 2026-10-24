@@ -514,3 +514,81 @@ footer {
     padding: 12px;
   }
 }
+
+
+/* Authentication screen */
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: #f1f5f9;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 12px 36px rgba(15, 23, 42, 0.08);
+}
+
+.auth-card .brand-icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.auth-card h1 {
+  margin: 0;
+  color: #0f172a;
+}
+
+.auth-card > p {
+  margin: 0 0 8px;
+  color: #64748b;
+}
+
+.auth-card label {
+  color: #334155;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.auth-card input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font: inherit;
+}
+
+.auth-card button {
+  margin-top: 8px;
+  padding: 12px;
+  border: 0;
+  border-radius: 8px;
+  background: #2563eb;
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.auth-card button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
